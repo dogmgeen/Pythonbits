@@ -6,6 +6,7 @@ Ffmpeg.py
 Created by Ichabond on 2012-07-01.
 Copyright (c) 2012 Baconseed. All rights reserved.
 """
+import sys
 import os
 import re
 import subprocess
@@ -62,7 +63,7 @@ class FFMpeg(object):
                             "-vframes", "1",
                             "-y",
                             "-f", "image2",
-                            r"scale='max(sar,1)*iw':'max(1/sar,1)*ih'",
+                            "-vf", """scale='max(sar,1)*iw':'max(1/sar,1)*ih'""",
                             img],
                            stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         return imgs
@@ -71,7 +72,7 @@ class FFMpeg(object):
 def ffmpeg_wrapper(*args, **kwargs):
     try:
         return subprocess.Popen(*args, **kwargs).communicate()
-    except OSError:
+    except OSError as e:
         raise FFMpegException("Error: Ffmpeg not installed, refer to "
                               "http://www.ffmpeg.org/download.html for "
                               "installation")
