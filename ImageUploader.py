@@ -6,35 +6,31 @@ ImageUploader.py
 Created by Ichabond on 2012-07-01.
 """
 
-import json
-import urllib2
-import MultipartPostHandler
-import re
+import requests
 
 
-class Upload(object):
-    def __init__(self, filelist):
-        self.images = filelist
-        self.imageurl = []
+BASE_URL = 'https://images.baconbits.org/'
 
-    def upload(self):
-        opener = urllib2.build_opener(MultipartPostHandler.MultipartPostHandler)
-        matcher = re.compile(r'http(s)*://')
-        try:
-            for image in self.images:
-                if matcher.match(image):
-                    params = ({'url': image})
-                else:
-                    params = ({'ImageUp': open(image, "rb")})
-                socket = opener.open("https://images.baconbits.org/upload.php", params)
-                json_str = socket.read()
-                if hasattr(json, 'loads') or hasattr(json, 'read'):
-                    read = json.loads(json_str)
-                else:
-                    err_msg = "I cannot decipher the provided json\n" + \
-                              "Please report the following output to the relevant bB forum: \n" + \
-                              ("%s" % dir(json))
-                self.imageurl.append("https://images.baconbits.org/images/" + read["ImgName"])
-        except Exception as e:
-            print e
-        return self.imageurl
+
+class BaconBitsImageUploadError(Exception):
+    pass
+
+
+def upload(file_or_url):
+    if any(file_or_url.startswith(schema) for schema in
+           ('http://', 'https://')):
+        files = {'url': file_or_url}
+    else:
+        files = {'ImageUp': open(file_or_url, 'rb')}
+
+    try:
+        j = requests.post(BASE_URL + 'upload.php',
+                          files=files).json()
+    except ValueError:
+        raise BaconBitsImageUploadError("Failed to upload '%s'!" % file_or_url)
+
+    if 'ImgName' in j:
+        return BASE_URL + 'images/' + j['ImgName']
+    else:
+        raise BaconBitsImageUploadError("Failed to upload '%s'!" % file_or_url,
+                                        repr(j))

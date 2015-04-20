@@ -18,7 +18,7 @@ import TvdbParser
 
 from Screenshots import createScreenshots
 
-from ImageUploader import Upload
+from ImageUploader import upload
 
 from optparse import OptionParser
 
@@ -160,7 +160,7 @@ def main(argv):
                 print "Mediainfo: \n", mediainfo
             for shot in screenshot:
                 print "Screenshot: %s" % shot
-            cover = Upload([summary['cover']]).upload()
+            cover = upload(summary['cover'])
             if cover:
                 print "Image (Optional): ", cover[0]
 
