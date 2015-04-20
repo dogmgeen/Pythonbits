@@ -56,13 +56,8 @@ class FFMpeg(object):
 
         duration = self.duration
         for img, stop in zip(imgs, stops):
-            ffmpeg_wrapper([r"ffmpeg",
-                            "-ss", str((duration * stop) / 100),
-                            "-i", self.file,
-                            "-vframes", "1",
-                            "-y",
-                            "-f",
-                            "image2", img],
+            ffmpeg_wrapper([r"ffmpeg", "-ss", str((duration * stop) / 100), "-i", self.file, "-vframes", "1",
+                            "-y", "-f", "image2", "-vf", """scale='max(sar,1)*iw':'max(1/sar,1)*ih'""", img],
                            stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         return imgs
 
