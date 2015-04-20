@@ -2,9 +2,11 @@
 #### A Python description generator for movies and TV shows
 
 ## Install
-1. Put all files in your $PATH, and make sure pythonbits.py is executable
 
-2. Use pip (https://github.com/pypa/pip) to install dependencies: pip install -r requirements
+    $ [sudo] pip install https://github.com/Ichabond/Pythonbits/archive/master.zip
+    $ pythonbits --help
+
+Python 2 is required. The correct version of pip may be called `pip2` on some platforms.
 
 ## Usage
-Use pythonbits.py --help to get a usage overview
+Use `pythonbits --help` to get a usage overview

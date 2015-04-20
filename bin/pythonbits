@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 # encoding: utf-8
 """
 Pythonbits2.py
@@ -12,15 +12,9 @@ __version_str__ = '.'.join(str(x) for x in __version__)
 import sys
 import os
 import subprocess
-
-import ImdbParser
-import TvdbParser
-
-from Screenshots import createScreenshots
-
-from ImageUploader import upload
-
 from optparse import OptionParser
+
+from pythonbits import IMDB, TVDB, createScreenshots, upload
 
 
 def generateSeriesSummary(summary):
@@ -127,7 +121,7 @@ def main(argv):
         for shot in screenshot:
             print shot
     elif options.season or options.episode:
-        tvdb = TvdbParser.TVDB()
+        tvdb = TVDB()
         if options.season:
             tvdb.search(search_string, season=options.season)
         if options.episode:
@@ -144,7 +138,7 @@ def main(argv):
                 summary += "[mediainfo]\n%s\n[/mediainfo]" % mediainfo
         print summary
     else:
-        imdb = ImdbParser.IMDB()
+        imdb = IMDB()
         imdb.search(search_string)
         imdb.movieSelector()
         summary = imdb.summary()
