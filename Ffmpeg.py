@@ -61,8 +61,9 @@ class FFMpeg(object):
                             "-i", self.file,
                             "-vframes", "1",
                             "-y",
-                            "-f",
-                            "image2", img],
+                            "-f", "image2",
+                            r"scale='max(sar,1)*iw':'max(1/sar,1)*ih'",
+                            img],
                            stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         return imgs
 
