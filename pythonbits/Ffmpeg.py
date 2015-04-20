@@ -21,6 +21,9 @@ class FFMpeg(object):
 
     def __init__(self, filepath):
         self.file = filepath
+        if not os.path.exists(filepath):
+            raise FFMpegException("File %s does not exist!" % filepath)
+
         self.tempdir = mkdtemp(prefix="pythonbits-")
 
     @property
