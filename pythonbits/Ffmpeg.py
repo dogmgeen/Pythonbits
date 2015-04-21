@@ -60,6 +60,7 @@ class FFMpeg(object):
 
         duration = self.duration
         for img, stop in zip(imgs, stops):
+
             ffmpeg_wrapper([r"ffmpeg",
                             "-ss", str((duration * stop) / 100),
                             "-i", self.file,
