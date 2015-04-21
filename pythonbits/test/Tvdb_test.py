@@ -7,9 +7,8 @@ Created by Ichabond on 2012-07-03.
 """
 
 import unittest
-from nose.tools import assert_raises, raises
+from nose.tools import assert_raises
 
-import mock
 import tvdb_api
 
 from pythonbits.TvdbParser import TVDB
