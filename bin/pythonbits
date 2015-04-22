@@ -14,7 +14,7 @@ import os
 import subprocess
 from optparse import OptionParser
 
-from pythonbits import IMDB, TVDB, createScreenshots, upload
+from pythonbits import lookup_movie, TVDB, createScreenshots, upload
 
 
 def generateSeriesSummary(summary):
@@ -51,24 +51,6 @@ def generateSeriesSummary(summary):
             if i in range(1, summary['episodes'] + 1):
                 description += "[*] %s\n" % summary['episode' + str(i)]
         description += "[/list]"
-    description += "[/quote]"
-
-    return description
-
-
-def generateMoviesSummary(summary):
-    description = "[b]Description[/b] \n"
-    description += "[quote]%s[/quote]\n" % summary['description']
-    description += "[b]Information:[/b]\n"
-    description += "[quote]IMDB Url: %s\n" % summary['url']
-    description += "Title: %s\n" % summary['name']
-    description += "Year: %s\n" % summary['year']
-    description += "MPAA: %s\n" % summary['mpaa']
-    description += "Rating: %s/10\n" % summary['rating']
-    description += "Votes: %s\n" % summary['votes']
-    description += "Runtime: %s\n" % summary['runtime']
-    description += "Director(s): %s\n" % summary['director']
-    description += "Writer(s): %s\n" % summary['writers']
     description += "[/quote]"
 
     return description
@@ -138,23 +120,15 @@ def main(argv):
                 summary += "[mediainfo]\n%s\n[/mediainfo]" % mediainfo
         print summary
     else:
-        imdb = IMDB()
-        imdb.search(search_string)
-        imdb.movieSelector()
-        summary = imdb.summary()
-        movie = generateMoviesSummary(summary)
-        print "\n\n\n"
-        print "Year: ", summary['year']
-        print "\n\n\n"
-        print "Movie Description: \n", movie
-        print "\n\n\n"
+        movie = lookup_movie(search_string).get_selection()
+        print movie.summary
         if not options.info:
             mediainfo = findMediaInfo(filename)
             if mediainfo:
                 print "Mediainfo: \n", mediainfo
             for shot in screenshot:
                 print "Screenshot: %s" % shot
-            cover = upload(summary['cover'])
+            cover = upload(movie.cover_url)
             if cover:
                 print "Image (Optional): ", cover[0]
 

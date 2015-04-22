@@ -2,8 +2,7 @@ setup.py
 bin/pythonbits
 pythonbits/Ffmpeg.py
 pythonbits/ImageUploader.py
-pythonbits/ImdbParser.py
+pythonbits/movie.py
 pythonbits/Screenshots.py
 pythonbits/TvdbParser.py
-pythonbits/TvdbUnitTests.py
 pythonbits/__init__.py
