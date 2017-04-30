@@ -1,3 +1,4 @@
 imdbpie>=4.2.0
 requests==2.13.0
 tvdb-api==1.10
+pycountry==17.1.8

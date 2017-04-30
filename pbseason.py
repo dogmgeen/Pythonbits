@@ -41,6 +41,66 @@ logger = logging.getLogger(__appname__)
 
 def main(args):
     # Retrieve show title from TVDB, IMDB, and Wikipedia if it exists.
+    import tvdb_api
+    t = tvdb_api.Tvdb()
+    show = t[args.show_title]
+
+    # Upload title
+    upload_title_template = ('{title} - Season {season_number} '
+                             '[{video_source} / {video_codec} / {audio_codec} '
+                             '/ {video_container} / {video_rez}]')
+
+    section_header_template = '[color=#FF6633][b]{header}[/b][/color]\n'
+    section_template = section_header_template + (
+                       '[quote]\n'
+                       '{body}\n'
+                       '[/quote]\n')
+
+    description = section_template.format(header='Description',
+                                          body=show['overview'])
+    print(description)
+
+    info_template = (
+        '     Title:  {seriesname}\n'
+        '     Genre:  {genre}\n'
+        '  Language:  {language}\n'
+        #'   Country:  {country}\n'
+        '   Network:  {network}\n'
+        ' More info:  {urls}\n'
+    )
+    info_section_template = section_header_template + (
+        '[pre]\n'
+        '{info}'
+        '[/pre]\n'
+    )
+
+    url_format = '[url={imdb}]IMDB[/url] | [url={tvdb}]TheTVDB[/url]'
+    tvdb_url_format = 'http://thetvdb.com/?tab=series&id={id}'
+    imdb_url_format = 'http://www.imdb.com/title/{imdb_id}/'
+    urls = url_format.format(imdb=imdb_url_format.format(**show),
+                             tvdb=tvdb_url_format.format(**show))
+
+
+
+    info_dict = dict(show.data)
+    info_dict['urls'] = urls
+
+    import pycountry
+    show_language = pycountry.languages.get(alpha_2=show['language'])
+    info_dict['language'] = show_language.name
+
+    import pprint
+    pprint.pprint(show.data)
+    info = info_section_template.format(
+        header='Information',
+        info=info_template.format(
+            #urls=urls,
+            **info_dict
+        ))
+    print(info)
+    print(show['imdb_id'])
+    season = show[args.season_number]
+    print(season.keys())
 
     # Compute the sample screenshots.
 
@@ -86,7 +146,7 @@ def get_arguments():
     parser.add_argument('-v', '--verbose', action='store_true',
                         default=__indev__, help='verbose output')
     parser.add_argument('-P', '--season', dest='season_number',
-                        type=int,
+                        type=int, required=True,
                         help='Season number')
     parser.add_argument('-T', '--title', dest='show_title',
                         required=True,
