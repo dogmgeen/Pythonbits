@@ -60,31 +60,22 @@ def main(args):
     print(description)
 
     info_template = (
-        '     Title:  {seriesname}\n'
-        '     Genre:  {genre}\n'
-        '  Language:  {language}\n'
+        'Title:  {seriesname}\n'
+        'Genre:  {genre}\n'
+        'Language:  {language}\n'
         #'   Country:  {country}\n'
-        '   Network:  {network}\n'
-        ' More info:  {urls}\n'
-    )
-    info_section_template = section_header_template + (
-        '[pre]\n'
-        '{info}'
-        '[/pre]\n'
+        'Network:  {network}\n'
+        'First aired: {firstaired}\n'
+        'More info:  {urls}\n'
     )
 
     url_format = '[url={imdb}]IMDB[/url] | [url={tvdb}]TheTVDB[/url]'
     urls = url_format.format(**show)
     show['urls'] = urls
 
-    import pprint
-    pprint.pprint(show)
-    info = info_section_template.format(
+    info = section_template.format(
         header='Information',
-        info=info_template.format(
-            #urls=urls,
-            **show
-        ))
+        body=info_template.format(**show))
     print(info)
 
     # Compute the sample screenshots.
