@@ -23,6 +23,7 @@ AUTHOR
 
 """
 from pythonbits import utils
+from pythonbits import api
 
 __appname__ = "pbseason"
 __author__ = "tori@bB"
@@ -41,9 +42,7 @@ logger = logging.getLogger(__appname__)
 
 def main(args):
     # Retrieve show title from TVDB, IMDB, and Wikipedia if it exists.
-    import tvdb_api
-    t = tvdb_api.Tvdb()
-    show = t[args.show_title]
+    show = api.retrieve(args.show_title)
 
     # Upload title
     upload_title_template = ('{title} - Season {season_number} '
@@ -75,32 +74,18 @@ def main(args):
     )
 
     url_format = '[url={imdb}]IMDB[/url] | [url={tvdb}]TheTVDB[/url]'
-    tvdb_url_format = 'http://thetvdb.com/?tab=series&id={id}'
-    imdb_url_format = 'http://www.imdb.com/title/{imdb_id}/'
-    urls = url_format.format(imdb=imdb_url_format.format(**show),
-                             tvdb=tvdb_url_format.format(**show))
-
-
-
-    info_dict = dict(show.data)
-    info_dict['urls'] = urls
-
-    import pycountry
-    show_language = pycountry.languages.get(alpha_2=show['language'])
-    info_dict['language'] = show_language.name
+    urls = url_format.format(**show)
+    show['urls'] = urls
 
     import pprint
-    pprint.pprint(show.data)
+    pprint.pprint(show)
     info = info_section_template.format(
         header='Information',
         info=info_template.format(
             #urls=urls,
-            **info_dict
+            **show
         ))
     print(info)
-    print(show['imdb_id'])
-    season = show[args.season_number]
-    print(season.keys())
 
     # Compute the sample screenshots.
 
